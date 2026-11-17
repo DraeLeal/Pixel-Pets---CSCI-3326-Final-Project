@@ -20,9 +20,15 @@ public class Food {
         return hungerRestored;
     }
 
-    // runs when feed buttin is pressed
+    // runs when feed buttin is pressed: now changes hunger based on likes and dislikes
     public void onFed(Pet pet) {
-        pet.changeHunger(hungerRestored);
+        int amount = hungerRestored;
+            if (name.equals(pet.getLikes())) {
+                amount += 10;
+            } else if (name.equals(pet.getDislikes())) {
+                amount -= 10;
+            }
+        pet.changeHunger(amount);
         System.out.println("Fed: " + name);
     }
 }
