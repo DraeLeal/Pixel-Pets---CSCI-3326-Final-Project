@@ -31,7 +31,7 @@ public class PetUI {
     }
 
     // create stat row method
-    static void addStatRow(JPanel panel, int row, String name, int value, Color color) {
+    static JProgressBar addStatRow(JPanel panel, int row, String name, int value, Color color) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridy = row;
         c.insets = new Insets(6, 10, 6, 10);
@@ -59,6 +59,8 @@ public class PetUI {
         c.gridx = 2;
         c.anchor = GridBagConstraints.WEST;
         panel.add(percent, c);
+        bar.addChangeListener(e -> percent.setText(bar.getValue() + "%"));
+        return bar;
     }
 
     // create button method
@@ -73,7 +75,9 @@ public class PetUI {
         b.setPreferredSize(new Dimension(110, 50));
         return b;
     }
-    public static void main(String[] args) {
+
+    // gets pet from main
+    public static void show(Pet pet) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Pixel Pets");
             frame.setSize(650, 560);
@@ -108,18 +112,18 @@ public class PetUI {
 
             JPanel infoPanel = new JPanel(new GridLayout(4, 1, 0, 10));
             infoPanel.setOpaque(false);
-            infoPanel.add(makeInfo("Name", "Sparky"));
-            infoPanel.add(makeInfo("Type", "Dragon"));
-            infoPanel.add(makeInfo("Likes", "Takis"));
-            infoPanel.add(makeInfo("Dislikes", "Water"));
+            infoPanel.add(makeInfo("Name", pet.getName()));
+            infoPanel.add(makeInfo("Type", pet.getType()));
+            infoPanel.add(makeInfo("Likes", pet.getLikes()));
+            infoPanel.add(makeInfo("Dislikes", pet.getDislikes()));
             topRow.add(infoPanel);
 
             // Stat bars
             JPanel statsPanel = new JPanel(new GridBagLayout());
             statsPanel.setOpaque(false);
-            addStatRow(statsPanel, 0, "Hunger:", 80, RED);
-            addStatRow(statsPanel, 1, "Happiness:", 50, YELLOW);
-            addStatRow(statsPanel, 2, "Energy:", 100, TEAL);
+            JProgressBar hungerBar = addStatRow(statsPanel, 0, "Hunger:", pet.getHunger(), RED);
+            JProgressBar happinessBar = addStatRow(statsPanel, 1, "Happiness:", pet.getHappiness(), YELLOW);
+            JProgressBar energyBar = addStatRow(statsPanel, 2, "Energy:", pet.getEnergy(), TEAL);
 
             JPanel statsWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
             statsWrapper.setOpaque(false);
@@ -130,14 +134,44 @@ public class PetUI {
             centerPanel.add(statsWrapper, BorderLayout.CENTER);
             frame.add(centerPanel, BorderLayout.CENTER);
 
+            // Food buttons: invisible until feed button is pressed
+            JPanel foodPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
+                foodPanel.setOpaque(false);
+                foodPanel.setVisible(false);
+                for (Food food : Food.ALL) {
+                    JButton foodButton = makeButton(food.getName(), CREAM);
+                    foodButton.addActionListener(e -> {
+                        food.onFed(pet);
+                        hungerBar.setValue(pet.getHunger());
+                        foodPanel.setVisible(false);
+                        frame.revalidate();
+                        frame.repaint();
+                    });
+                    foodPanel.add(foodButton);
+                }
+
             // Buttons
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
             buttonPanel.setOpaque(false);
             buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 30, 0));
-            buttonPanel.add(makeButton("Feed", RED));
+
+            JButton feedButton = makeButton("Feed", RED);
+            feedButton.addActionListener(e -> {
+                foodPanel.setVisible(!foodPanel.isVisible());
+                frame.revalidate();
+                frame.repaint();
+            });
+            buttonPanel.add(feedButton);
+
             buttonPanel.add(makeButton("Play", YELLOW));
             buttonPanel.add(makeButton("Sleep", TEAL));
-            frame.add(buttonPanel, BorderLayout.SOUTH);
+
+            // stacks food butttons on top of main buttons
+            JPanel bottomPanel = new JPanel(new BorderLayout());
+            bottomPanel.setOpaque(false);
+            bottomPanel.add(foodPanel, BorderLayout.NORTH);
+            bottomPanel.add(buttonPanel, BorderLayout.CENTER);
+            frame.add(bottomPanel, BorderLayout.SOUTH);
 
             frame.setVisible(true);
         });

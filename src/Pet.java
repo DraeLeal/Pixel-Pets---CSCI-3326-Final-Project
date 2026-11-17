@@ -35,6 +35,10 @@ public abstract class Pet {
         return hunger;
     }
 
+    public void changeHunger(int amount) {
+        hunger = Math.max(0, Math.min(hunger + amount, MAX_STATS));
+    }
+
     public int getHappiness() {
         return happiness;
     }
