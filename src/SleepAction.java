@@ -5,7 +5,7 @@ public class SleepAction {
         pet.changeEnergy(30);
 
         // Sleeping makes the pet hungrier
-        pet.changeHunger(10);
+        pet.changeHunger(-5);
 
         System.out.println(pet.getName() + " is sleeping!");
     }
