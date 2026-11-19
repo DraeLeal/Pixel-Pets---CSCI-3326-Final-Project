@@ -1,34 +1,32 @@
-public class Pet {
+public abstract class Pet {
 
     // Pet attributes
     private String name;
-    private String species;
     private String likes;
     private String dislikes;
-
     private int hunger;
     private int happiness;
     private int energy;
 
+    private static final int MAX_STATS = 100;
+
+    // Abstraction
+    public abstract String getType();
+
     // Constructor
-    public Pet(String name, String species, String likes, String dislikes) {
+    public Pet(String name, String likes, String dislikes) {
         this.name = name;
-        this.species = species;
         this.likes = likes;
         this.dislikes = dislikes;
 
         this.hunger = 80;
         this.happiness = 50;
-        this.energy = 100;
+        this.energy = MAX_STATS;
     }
 
     // Getters
     public String getName() {
         return name;
-    }
-
-    public String getSpecies() {
-        return species;
     }
 
     public String getLikes() {
@@ -57,39 +55,27 @@ public class Pet {
     }
 
     public void setHunger(int hunger) {
-        this.hunger = Math.max(0, Math.min(100, hunger));
+        this.hunger = Math.max(0, Math.min(MAX_STATS, hunger));
     }
 
     public void setHappiness(int happiness) {
-        this.happiness = Math.max(0, Math.min(100, happiness));
+        this.happiness = Math.max(0, Math.min(MAX_STATS, happiness));
     }
 
     public void setEnergy(int energy) {
-        this.energy = Math.max(0, Math.min(100, energy));
+        this.energy = Math.max(0, Math.min(MAX_STATS, energy));
     }
 
-    // Feed the pet
-    public void feed() {
-        setHunger(hunger - 20);
-        setHappiness(happiness + 5);
-
-        System.out.println(name + " has been fed!");
+    // Modify pet statistics
+    public void changeHunger(int amount) {
+        setHunger(hunger + amount);
     }
 
-    // Play with the pet
-    public void play() {
-        setHappiness(happiness + 20);
-        setEnergy(energy - 15);
-        setHunger(hunger + 10);
-
-        System.out.println(name + " is playing!");
+    public void changeHappiness(int amount) {
+        setHappiness(happiness + amount);
     }
 
-    // Let the pet sleep
-    public void sleep() {
-        setEnergy(energy + 30);
-        setHunger(hunger + 10);
-
-        System.out.println(name + " is sleeping!");
+    public void changeEnergy(int amount) {
+        setEnergy(energy + amount);
     }
 }
