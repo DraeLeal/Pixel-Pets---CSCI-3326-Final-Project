@@ -164,7 +164,17 @@ public class PetUI {
             buttonPanel.add(feedButton);
 
             buttonPanel.add(makeButton("Play", YELLOW));
-            buttonPanel.add(makeButton("Sleep", TEAL));
+            JButton sleepButton = makeButton("Sleep", TEAL);
+
+            sleepButton.addActionListener(e -> {
+                SleepAction.sleep(pet);
+
+                // Update the progress bars
+                hungerBar.setValue(pet.getHunger());
+                energyBar.setValue(pet.getEnergy());
+});
+
+buttonPanel.add(sleepButton);
 
             // stacks food butttons on top of main buttons
             JPanel bottomPanel = new JPanel(new BorderLayout());
