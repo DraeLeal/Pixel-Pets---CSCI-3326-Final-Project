@@ -7,6 +7,34 @@ public class TestPet {
         System.out.println("Name: " + pet.getName());
         System.out.println("Type: " + pet.getType());
 
+        // Test disliked food
+        System.out.println("\nBefore feeding disliked food (Water):");
+        displayStats(pet);
+
+        FeedingAction.WATER.onFed(pet);
+
+        System.out.println("\nAfter feeding disliked food (Water):");
+        displayStats(pet);
+
+        // Test liked food
+        System.out.println("\nBefore feeding liked food (Takis):");
+        displayStats(pet);
+
+        FeedingAction.TAKIS.onFed(pet);
+
+        System.out.println("\nAfter feeding liked food (Takis):");
+        displayStats(pet);
+
+        // Test neutral food
+        System.out.println("\nBefore feeding neutral food (Pizza):");
+        displayStats(pet);
+
+        FeedingAction.PIZZA.onFed(pet);
+
+        System.out.println("\nAfter feeding neutral food (Pizza):");
+        displayStats(pet);
+
+
         // Set energy below 100 to test recovery
         pet.setEnergy(50);
 

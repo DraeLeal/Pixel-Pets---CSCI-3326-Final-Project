@@ -159,11 +159,12 @@ public class PetUI {
             // Food buttons: invisible until feed button is pressed
             JPanel foodPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
             foodPanel.setOpaque(false);
-            for (Food food : Food.ALL) {
+            for (FeedingAction food : FeedingAction.ALL) {
                 JButton foodButton = makeButton(food.getName(), CREAM);
                 foodButton.addActionListener(e -> {
                     food.onFed(pet);
                     hungerBar.setValue(pet.getHunger());
+                    happinessBar.setValue(pet.getHappiness()); 
                     actionChoicesPanel.setVisible(false);
                     frame.revalidate();
                     frame.repaint();
