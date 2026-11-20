@@ -76,6 +76,24 @@ public class PetUI {
         return b;
     }
 
+    private static void checkGameOver(Pet pet, JFrame frame) {
+        boolean hungerDepleted = pet.getHunger() <= 0;
+        boolean energyDepleted = pet.getEnergy() <= 0;
+        if (!hungerDepleted && !energyDepleted) {
+            return;
+        }
+
+        String cause = hungerDepleted && energyDepleted
+            ? "hunger and energy"
+            : hungerDepleted ? "hunger" : "energy";
+        JOptionPane.showMessageDialog(
+            frame,
+            pet.getName() + " ran out of " + cause + "!",
+            "Game Over",
+            JOptionPane.INFORMATION_MESSAGE);
+        frame.dispose();
+    }
+
     // gets pet from main
     public static void show(Pet pet) {
         SwingUtilities.invokeLater(() -> {
@@ -134,21 +152,44 @@ public class PetUI {
             centerPanel.add(statsWrapper, BorderLayout.CENTER);
             frame.add(centerPanel, BorderLayout.CENTER);
 
+            JPanel actionChoicesPanel = new JPanel(new BorderLayout());
+            actionChoicesPanel.setOpaque(false);
+            actionChoicesPanel.setVisible(false);
+
             // Food buttons: invisible until feed button is pressed
             JPanel foodPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
-                foodPanel.setOpaque(false);
-                foodPanel.setVisible(false);
-                for (Food food : Food.ALL) {
-                    JButton foodButton = makeButton(food.getName(), CREAM);
-                    foodButton.addActionListener(e -> {
-                        food.onFed(pet);
-                        hungerBar.setValue(pet.getHunger());
-                        foodPanel.setVisible(false);
-                        frame.revalidate();
-                        frame.repaint();
-                    });
-                    foodPanel.add(foodButton);
-                }
+            foodPanel.setOpaque(false);
+            for (Food food : Food.ALL) {
+                JButton foodButton = makeButton(food.getName(), CREAM);
+                foodButton.addActionListener(e -> {
+                    food.onFed(pet);
+                    hungerBar.setValue(pet.getHunger());
+                    actionChoicesPanel.setVisible(false);
+                    frame.revalidate();
+                    frame.repaint();
+                    checkGameOver(pet, frame);
+                });
+                foodPanel.add(foodButton);
+            }
+
+            // Play choices: hidden until Play is pressed
+            JPanel playPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
+            playPanel.setOpaque(false);
+            for (PlayingAction action : PlayingAction.ALL) {
+                JButton playButton = makeButton(action.getName(), YELLOW);
+                playButton.setPreferredSize(new Dimension(150, 50));
+                playButton.addActionListener(e -> {
+                    action.play(pet);
+                    hungerBar.setValue(pet.getHunger());
+                    happinessBar.setValue(pet.getHappiness());
+                    energyBar.setValue(pet.getEnergy());
+                    actionChoicesPanel.setVisible(false);
+                    frame.revalidate();
+                    frame.repaint();
+                    checkGameOver(pet, frame);
+                });
+                playPanel.add(playButton);
+            }
 
             // Buttons
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
@@ -157,13 +198,33 @@ public class PetUI {
 
             JButton feedButton = makeButton("Feed", RED);
             feedButton.addActionListener(e -> {
-                foodPanel.setVisible(!foodPanel.isVisible());
+                boolean alreadyShowingFood = actionChoicesPanel.isVisible()
+                    && actionChoicesPanel.getComponentCount() > 0
+                    && actionChoicesPanel.getComponent(0) == foodPanel;
+                actionChoicesPanel.removeAll();
+                if (!alreadyShowingFood) {
+                    actionChoicesPanel.add(foodPanel, BorderLayout.CENTER);
+                }
+                actionChoicesPanel.setVisible(!alreadyShowingFood);
                 frame.revalidate();
                 frame.repaint();
             });
             buttonPanel.add(feedButton);
 
-            buttonPanel.add(makeButton("Play", YELLOW));
+            JButton playButton = makeButton("Play", YELLOW);
+            playButton.addActionListener(e -> {
+                boolean alreadyShowingPlay = actionChoicesPanel.isVisible()
+                    && actionChoicesPanel.getComponentCount() > 0
+                    && actionChoicesPanel.getComponent(0) == playPanel;
+                actionChoicesPanel.removeAll();
+                if (!alreadyShowingPlay) {
+                    actionChoicesPanel.add(playPanel, BorderLayout.CENTER);
+                }
+                actionChoicesPanel.setVisible(!alreadyShowingPlay);
+                frame.revalidate();
+                frame.repaint();
+            });
+            buttonPanel.add(playButton);
             JButton sleepButton = makeButton("Sleep", TEAL);
 
             sleepButton.addActionListener(e -> {
@@ -172,18 +233,19 @@ public class PetUI {
                 // Update the progress bars
                 hungerBar.setValue(pet.getHunger());
                 energyBar.setValue(pet.getEnergy());
-});
+                checkGameOver(pet, frame);
+            });
+            buttonPanel.add(sleepButton);
 
-buttonPanel.add(sleepButton);
-
-            // stacks food butttons on top of main buttons
+            // Shows the selected food or play choices above the action buttons.
             JPanel bottomPanel = new JPanel(new BorderLayout());
             bottomPanel.setOpaque(false);
-            bottomPanel.add(foodPanel, BorderLayout.NORTH);
+            bottomPanel.add(actionChoicesPanel, BorderLayout.NORTH);
             bottomPanel.add(buttonPanel, BorderLayout.CENTER);
             frame.add(bottomPanel, BorderLayout.SOUTH);
 
             frame.setVisible(true);
+            checkGameOver(pet, frame);
         });
     }
 }
