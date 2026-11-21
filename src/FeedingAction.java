@@ -1,13 +1,13 @@
-public class Food {
+public class FeedingAction {
 
-    public static final Food TAKIS = new Food("Takis", 20);
-    public static final Food PIZZA = new Food("Pizza", 30);
-    public static final Food WATER = new Food("Water", 10);
-    public static final Food[] ALL = {TAKIS, PIZZA, WATER};
+    public static final FeedingAction TAKIS = new FeedingAction("Takis", 20);
+    public static final FeedingAction PIZZA = new FeedingAction("Pizza", 30);
+    public static final FeedingAction WATER = new FeedingAction("Water", 10);
+    public static final FeedingAction[] ALL = {TAKIS, PIZZA, WATER};
     private String name;
     private int hungerRestored;
 
-    public Food(String name, int hungerRestored) {
+    public FeedingAction(String name, int hungerRestored) {
         this.name = name;
         this.hungerRestored = hungerRestored;
     }
@@ -25,8 +25,10 @@ public class Food {
         int amount = hungerRestored;
             if (name.equals(pet.getLikes())) {
                 amount += 10;
+                pet.changeHappiness(10);
             } else if (name.equals(pet.getDislikes())) {
                 amount -= 10;
+                pet.changeHappiness(-10);
             }
         pet.changeHunger(amount);
         System.out.println("Fed: " + name);
