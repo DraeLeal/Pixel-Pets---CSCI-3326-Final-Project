@@ -83,12 +83,18 @@ public class PetUI {
             return;
         }
 
-        String cause = hungerDepleted && energyDepleted
-            ? "hunger and energy"
-            : hungerDepleted ? "hunger" : "energy";
+        String message;
+        if (hungerDepleted && energyDepleted) {
+            message = pet.getName() + " collapsed from extreme hunger and exhaustion!";
+        } else if (hungerDepleted) {
+            message = pet.getName() + " starved!";
+        } else {
+            message = pet.getName() + " passed out from exhaustion!";
+        }
+
         JOptionPane.showMessageDialog(
             frame,
-            pet.getName() + " ran out of " + cause + "!",
+            message,
             "Game Over",
             JOptionPane.INFORMATION_MESSAGE);
         frame.dispose();
