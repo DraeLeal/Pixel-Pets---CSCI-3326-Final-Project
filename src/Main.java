@@ -19,7 +19,25 @@ public class Main {
             name = name.substring(0, 12);
         }
 
-        Pet pet = new Dragon(name, "Takis", "Water");
+        String[] types = {"Dragon", "Yeti", "Slime"};
+        String type = (String) JOptionPane.showInputDialog(
+            null,
+            "Choose your pet:",
+            "Pet Type",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            types,
+            types[0]);
+
+        Pet pet;
+        if ("Yeti".equals(type)) {
+            pet = new Yeti(name, "Pizza", "Takis");
+        } else if ("Slime".equals(type)) {
+            pet = new Slime(name, "Water", "Pizza");
+        } else {
+            pet = new Dragon(name, "Takis", "Water");
+        }
+
         PetUI.show(pet);
     }
 }
