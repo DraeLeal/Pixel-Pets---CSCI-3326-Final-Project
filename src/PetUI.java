@@ -149,17 +149,26 @@ public class PetUI {
     private static void checkGameOver(Pet pet, JFrame frame) {
         boolean hungerDepleted = pet.getHunger() <= 0;
         boolean energyDepleted = pet.getEnergy() <= 0;
-        if (!hungerDepleted && !energyDepleted) {
+        boolean happinessDepleted = pet.getHappiness() <= 0;
+        if (!hungerDepleted && !energyDepleted && !happinessDepleted) {
             return;
         }
 
         String message;
-        if (hungerDepleted && energyDepleted) {
+        if (hungerDepleted && energyDepleted && happinessDepleted) {
+            message = pet.getName() + " collapsed from extreme hunger, exhaustion, and sadness!";
+        } else if (hungerDepleted && energyDepleted) {
             message = pet.getName() + " collapsed from extreme hunger and exhaustion!";
+        } else if (hungerDepleted && happinessDepleted) {
+            message = pet.getName() + " starved and became too sad!";
+        } else if (energyDepleted && happinessDepleted) {
+            message = pet.getName() + " passed out from exhaustion and sadness!";
         } else if (hungerDepleted) {
             message = pet.getName() + " starved!";
-        } else {
+        } else if (energyDepleted) {
             message = pet.getName() + " passed out from exhaustion!";
+        } else {
+            message = pet.getName() + " became sad!";
         }
 
         JOptionPane.showMessageDialog(
