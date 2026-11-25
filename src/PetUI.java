@@ -76,6 +76,76 @@ public class PetUI {
         return b;
     }
 
+    private static JPanel makePetImage(String type) {
+        JPanel image = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+
+                int size = 10;
+                int x = (getWidth() - 16 * size) / 2;
+                int y = (getHeight() - 12 * size) / 2;
+
+                if ("Dragon".equals(type)) {
+                    g2.setColor(new Color(0x79C267));
+                    g2.fillRect(x + 4 * size, y + 2 * size, 8 * size, 8 * size);
+                    g2.fillRect(x + 2 * size, y + 4 * size, 12 * size, 5 * size);
+                    g2.setColor(new Color(0x4B8C46));
+                    g2.fillRect(x + 2 * size, y + 3 * size, 2 * size, 2 * size);
+                    g2.fillRect(x + 12 * size, y + 3 * size, 2 * size, 2 * size);
+                    g2.setColor(new Color(0xBDEB91));
+                    g2.fillRect(x + 5 * size, y + 4 * size, 2 * size, 2 * size);
+                    g2.fillRect(x + 9 * size, y + 4 * size, 2 * size, 2 * size);
+                    g2.setColor(new Color(0x12324F));
+                    g2.fillRect(x + 6 * size, y + 5 * size, size, size);
+                    g2.fillRect(x + 9 * size, y + 5 * size, size, size);
+                    g2.setColor(new Color(0xF8DDB0));
+                    g2.fillRect(x + 7 * size, y + 7 * size, 3 * size, size);
+                    g2.setColor(new Color(0xDC4339));
+                    g2.fillRect(x + 8 * size, y + 7 * size, size, size);
+                    g2.setColor(new Color(0xFAB432));
+                    g2.fillRect(x + 3 * size, y, 2 * size, 3 * size);
+                    g2.fillRect(x + 11 * size, y, 2 * size, 3 * size);
+                } else if ("Yeti".equals(type)) {
+                    g2.setColor(new Color(0xEAF6F6));
+                    g2.fillRect(x + 3 * size, y + 2 * size, 10 * size, 9 * size);
+                    g2.fillRect(x + size, y + 5 * size, 14 * size, 4 * size);
+                    g2.setColor(new Color(0xB9DADF));
+                    g2.fillRect(x + 2 * size, y + 3 * size, 2 * size, 3 * size);
+                    g2.fillRect(x + 12 * size, y + 3 * size, 2 * size, 3 * size);
+                    g2.setColor(new Color(0x12324F));
+                    g2.fillRect(x + 5 * size, y + 5 * size, size, size);
+                    g2.fillRect(x + 10 * size, y + 5 * size, size, size);
+                    g2.fillRect(x + 7 * size, y + 8 * size, 2 * size, size);
+                    g2.setColor(new Color(0x6DA7B1));
+                    g2.fillRect(x + 4 * size, y + 7 * size, 2 * size, size);
+                    g2.fillRect(x + 10 * size, y + 7 * size, 2 * size, size);
+                } else {
+                    g2.setColor(new Color(0x78C9FF));
+                    g2.fillRect(x + 3 * size, y + 3 * size, 10 * size, 8 * size);
+                    g2.fillRect(x + 2 * size, y + 5 * size, 12 * size, 5 * size);
+                    g2.setColor(new Color(0xB8E6FF));
+                    g2.fillRect(x + 4 * size, y + 4 * size, 3 * size, 2 * size);
+                    g2.fillRect(x + 5 * size, y + 2 * size, 2 * size, 2 * size);
+                    g2.setColor(new Color(0x12324F));
+                    g2.fillRect(x + 5 * size, y + 6 * size, size, size);
+                    g2.fillRect(x + 10 * size, y + 6 * size, size, size);
+                    g2.fillRect(x + 7 * size, y + 8 * size, 3 * size, size);
+                    g2.setColor(new Color(0x4DA3CF));
+                    g2.fillRect(x + 3 * size, y + 10 * size, 10 * size, size);
+                }
+
+                g2.dispose();
+            }
+        };
+        image.setPreferredSize(new Dimension(250, 150));
+        image.setBackground(DARK_NAVY);
+        image.setBorder(BorderFactory.createLineBorder(darker(DARK_NAVY), 4));
+        return image;
+    }
+
     private static void checkGameOver(Pet pet, JFrame frame) {
         boolean hungerDepleted = pet.getHunger() <= 0;
         boolean energyDepleted = pet.getEnergy() <= 0;
@@ -125,13 +195,7 @@ public class PetUI {
             JPanel topRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 20));
             topRow.setOpaque(false);
 
-            JLabel petBox = new JLabel("<Pet>", SwingConstants.CENTER);
-            petBox.setFont(new Font(FONT, Font.PLAIN, 24));
-            petBox.setForeground(CREAM);
-            petBox.setPreferredSize(new Dimension(250, 150));
-            petBox.setOpaque(true);
-            petBox.setBackground(DARK_NAVY);
-            petBox.setBorder(BorderFactory.createLineBorder(darker(DARK_NAVY), 4));
+            JPanel petBox = makePetImage(pet.getType());
             topRow.add(petBox);
 
             JPanel infoPanel = new JPanel(new GridLayout(4, 1, 0, 10));
